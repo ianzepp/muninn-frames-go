@@ -57,9 +57,11 @@ type Frame struct {
     Call      string
     Status    Status
     Trace     any
-    Data      any
+    Data      map[string]any
 }
 ```
+
+`Data` is always a key-value JSON object. Scalar values, top-level arrays, and `null` are not valid frame payloads.
 
 JSON field names follow the Rust frame schema exactly:
 

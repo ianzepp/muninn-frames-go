@@ -88,23 +88,29 @@ func TestEncodeFrameRejectsMissingData(t *testing.T) {
 }
 
 func TestDecodeFrameDefaultsMissingDataToEmptyObject(t *testing.T) {
-	frame, err := DecodeFrame([]byte(`{
+	_, err := DecodeFrame([]byte(`{
 		"id":"id-1",
 		"created_ms":1,
 		"expires_in":0,
 		"call":"board:list",
 		"status":"request"
 	}`))
-	if err != nil {
-		t.Fatalf("decode failed: %v", err)
+	if err == nil {
+		t.Fatal("expected decode to fail without object data")
 	}
+}
 
-	data, ok := frame.Data.(map[string]any)
-	if !ok {
-		t.Fatalf("expected object data, got %T", frame.Data)
-	}
-	if len(data) != 0 {
-		t.Fatalf("expected empty data object, got %#v", data)
+func TestDecodeFrameRejectsScalarData(t *testing.T) {
+	_, err := DecodeFrame([]byte(`{
+		"id":"id-1",
+		"created_ms":1,
+		"expires_in":0,
+		"call":"board:list",
+		"status":"request",
+		"data":24
+	}`))
+	if err == nil {
+		t.Fatal("expected decode to fail for scalar data")
 	}
 }
 

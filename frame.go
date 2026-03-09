@@ -41,7 +41,7 @@ type Frame struct {
 	Call      string  `json:"call"`
 	Status    Status  `json:"status"`
 	Trace     any     `json:"trace,omitempty"`
-	Data      any     `json:"data"`
+	Data      map[string]any `json:"data"`
 }
 
 // IsTerminal returns true if the status ends a response stream.
@@ -115,10 +115,6 @@ func DecodeFrame(data []byte) (Frame, error) {
 	var frame Frame
 	if err := json.Unmarshal(data, &frame); err != nil {
 		return Frame{}, err
-	}
-
-	if frame.Data == nil {
-		frame.Data = map[string]any{}
 	}
 
 	if err := frame.Validate(); err != nil {
